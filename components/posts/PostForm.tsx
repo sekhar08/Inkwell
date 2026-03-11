@@ -9,7 +9,7 @@ type PostFormProps = {
   submitLabel?: string;
 };
 
-export default function PostForm({ initialTitle = "", initialContent = "", initialTags = [], onSubmit, submitLabel = "Submit" }: PostFormProps) {
+export default function PostForm({ initialTitle = "", initialContent = "", initialTags = [], onSubmit }: PostFormProps) {
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const [tags, setTags] = useState(initialTags.join(", "));

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -24,7 +24,7 @@ export default function Home() {
           </h1>
           <div className="flex gap-4 justify-center">
             <button
-              onClick={() => router.push("/login")}
+              onClick={() => signIn()}
               className="px-6 py-2 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-black font-medium hover:opacity-80 transition"
             >
               Sign In
