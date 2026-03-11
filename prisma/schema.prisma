@@ -14,31 +14,20 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role {
-  AUTHOR
-  READER
-}
-
-enum PostStatus {
-  DRAFT
-  PUBLISHED
-}
-
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
+  id            String     @id @default(uuid())
+  email         String     @unique
   password      String
   name          String
   bio           String?
-  role          Role      @default(READER)
+  role          Role       @default(READER)
+  createdAt     DateTime   @default(now())
   emailVerified DateTime?
   image         String?
-  createdAt     DateTime  @default(now())
-
-  accounts  Account[]
-  sessions  Session[]
-  posts     Post[]
-  bookmarks Bookmark[]
+  accounts      Account[]
+  bookmarks     Bookmark[]
+  posts         Post[]
+  sessions      Session[]
 }
 
 model Account {
@@ -47,15 +36,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -86,10 +74,9 @@ model Post {
   authorId    String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-
-  author    User       @relation(fields: [authorId], references: [id])
-  tags      Tag[]
-  bookmarks Bookmark[]
+  bookmarks   Bookmark[]
+  author      User       @relation(fields: [authorId], references: [id])
+  tags        Tag[]
 }
 
 model Tag {
@@ -97,8 +84,7 @@ model Tag {
   name      String
   postId    String
   createdAt DateTime @default(now())
-
-  post Post @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
 }
 
 model Bookmark {
@@ -106,7 +92,16 @@ model Bookmark {
   userId    String
   postId    String
   createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
 
-  user User @relation(fields: [userId], references: [id])
-  post Post @relation(fields: [postId], references: [id])
+enum Role {
+  AUTHOR
+  READER
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
 }
