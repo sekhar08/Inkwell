@@ -1,27 +1,24 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import PostDetail from "@/components/posts/PostDetail";
+import { prisma } from "@/lib/db";
 
-interface PostData {
-  id: string;
-  title: string;
-  content: string;
-  status: string;
-  publishedAt: string | null;
-  createdAt: string;
-  author: { name: string; bio?: string };
-  tags: { name: string }[];
-}
-
-async function getPost(id: string): Promise<PostData | null> {
+async function getPost(id: string) {
   try {
-    const res = await fetch(
-      `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/posts/${id}`,
-      { cache: "no-store" }
-    );
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
+    const post = await prisma.post.findUnique({
+      where: { id },
+      include: {
+        author: {
+          select: { name: true, bio: true },
+        },
+        tags: {
+          select: { name: true },
+        },
+      },
+    });
+    return post;
+  } catch (error) {
+    console.error("Failed to fetch post:", error);
     return null;
   }
 }
@@ -54,7 +51,7 @@ export default async function PostPage({
           title={post.title}
           content={post.content}
           author={post.author?.name ?? "Anonymous"}
-          authorBio={post.author?.bio}
+          authorBio={post.author?.bio ?? undefined}
           tags={post.tags?.map((t) => t.name) ?? []}
         />
       </div>

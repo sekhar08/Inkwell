@@ -3,24 +3,25 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  author?: { name: string };
-  tags?: { name: string }[];
-}
+import { prisma } from "@/lib/db";
 
 async function getPosts() {
   try {
-    const res = await fetch(
-      `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/posts`,
-      { cache: "no-store" }
-    );
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
+    const posts = await prisma.post.findMany({
+      where: { status: "PUBLISHED" },
+      include: {
+        author: {
+          select: { name: true },
+        },
+        tags: {
+          select: { name: true },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return posts;
+  } catch (error) {
+    console.error("Failed to fetch posts:", error);
     return [];
   }
 }
@@ -31,9 +32,9 @@ export default async function PostsPage() {
     redirect("/");
   }
 
-  const posts = (await getPosts()) as Post[];
+  const posts = await getPosts();
 
-  const mappedPosts = posts.map((post: Post) => ({
+  const mappedPosts = posts.map((post) => ({
     id: post.id,
     title: post.title,
     excerpt:
