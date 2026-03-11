@@ -8,11 +8,12 @@ type PublishButtonProps = {
 export default function PublishButton({ onClick, disabled }: PublishButtonProps) {
   return (
     <button
+      id="publish-btn"
       onClick={onClick}
       disabled={disabled}
-      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition disabled:opacity-50"
+      className="btn btn-primary"
     >
-      Publish
+      ✦ Publish
     </button>
   );
 }

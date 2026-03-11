@@ -1,5 +1,6 @@
+"use client";
+
 import React, { useState } from "react";
-import PublishButton from "./PublishButton";
 
 type PostFormProps = {
   initialTitle?: string;
@@ -7,9 +8,17 @@ type PostFormProps = {
   initialTags?: string[];
   onSubmit: (data: { title: string; content: string; tags: string[] }) => void;
   submitLabel?: string;
+  isSubmitting?: boolean;
 };
 
-export default function PostForm({ initialTitle = "", initialContent = "", initialTags = [], onSubmit }: PostFormProps) {
+export default function PostForm({
+  initialTitle = "",
+  initialContent = "",
+  initialTags = [],
+  onSubmit,
+  submitLabel = "Publish",
+  isSubmitting = false,
+}: PostFormProps) {
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const [tags, setTags] = useState(initialTags.join(", "));
@@ -23,36 +32,99 @@ export default function PostForm({ initialTitle = "", initialContent = "", initi
     });
   };
 
+  const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
+
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded shadow p-6">
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Title</label>
+    <form onSubmit={handleSubmit} className="animate-fade-in-up">
+      {/* Title input — large, display font */}
+      <div className="form-group delay-1 animate-fade-in-up">
+        <label htmlFor="post-title" className="form-label">Title</label>
         <input
-          className="w-full border px-3 py-2 rounded"
+          id="post-title"
+          className="form-input"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "1.1rem",
+            fontWeight: 600,
+            padding: "14px 18px",
+          }}
+          placeholder="Give your post a compelling title…"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
         />
       </div>
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Content</label>
+
+      {/* Content textarea */}
+      <div className="form-group delay-2 animate-fade-in-up">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <label htmlFor="post-content" className="form-label">Content</label>
+          <span style={{ fontSize: "0.72rem", color: "var(--text-faint)" }}>
+            {wordCount} {wordCount === 1 ? "word" : "words"}
+          </span>
+        </div>
         <textarea
-          className="w-full border px-3 py-2 rounded"
+          id="post-content"
+          className="form-textarea"
+          style={{ minHeight: 320 }}
+          placeholder="Start writing your post here. HTML is supported…"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          rows={8}
           required
         />
       </div>
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Tags (comma separated)</label>
+
+      {/* Tags input */}
+      <div className="form-group delay-3 animate-fade-in-up">
+        <label htmlFor="post-tags" className="form-label">Tags</label>
         <input
-          className="w-full border px-3 py-2 rounded"
+          id="post-tags"
+          className="form-input"
+          placeholder="writing, technology, ideas (comma-separated)"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
         />
+        {/* Live tag preview */}
+        {tags.trim() && (
+          <div className="tags-row" style={{ marginTop: 8 }}>
+            {tags
+              .split(",")
+              .map((t) => t.trim())
+              .filter(Boolean)
+              .map((t) => (
+                <span key={t} className="tag">
+                  {t}
+                </span>
+              ))}
+          </div>
+        )}
       </div>
-      <PublishButton onClick={() => {}} disabled={false} />
+
+      {/* Submit */}
+      <div className="delay-4 animate-fade-in-up" style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
+        <button
+          type="button"
+          className="btn btn-ghost"
+          onClick={() => history.back()}
+        >
+          Cancel
+        </button>
+        <button
+          id="post-form-submit-btn"
+          type="submit"
+          className="btn btn-primary"
+          disabled={isSubmitting || !title.trim() || !content.trim()}
+        >
+          {isSubmitting ? (
+            <>
+              <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} />
+              Publishing…
+            </>
+          ) : (
+            <>✦ {submitLabel}</>
+          )}
+        </button>
+      </div>
     </form>
   );
 }

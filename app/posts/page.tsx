@@ -1,4 +1,5 @@
 import PostList from "@/components/posts/PostList";
+import Link from "next/link";
 
 interface Post {
   id: string;
@@ -8,28 +9,44 @@ interface Post {
   tags?: { name: string }[];
 }
 
-// This page fetches posts from the API and displays them using PostList
 async function getPosts() {
-  const res = await fetch("/api/posts", { cache: "no-store" });
-  if (!res.ok) return [];
-  return res.json();
+  try {
+    const res = await fetch(
+      `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/posts`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
 }
 
 export default async function PostsPage() {
-  const posts = await getPosts() as Post[];
-  // Map API data to PostList props shape if needed
+  const posts = (await getPosts()) as Post[];
+
   const mappedPosts = posts.map((post: Post) => ({
     id: post.id,
     title: post.title,
-    excerpt: post.content.slice(0, 120) + (post.content.length > 120 ? "..." : ""),
-    author: post.author?.name || "Unknown",
+    excerpt:
+      post.content.replace(/<[^>]*>/g, "").slice(0, 150) +
+      (post.content.length > 150 ? "…" : ""),
+    author: post.author?.name || "Anonymous",
     tags: post.tags?.map((t: { name: string }) => t.name) || [],
   }));
 
   return (
-    <div className="max-w-2xl mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-6">Posts</h1>
-      <PostList posts={mappedPosts} />
-    </div>
+    <main className="page-content">
+      <div className="animate-fade-in-up" style={{ paddingTop: 48 }}>
+        <div className="section-header">
+          <h1 className="section-title">Latest Posts</h1>
+          <Link href="/posts/create" className="section-link" id="posts-page-write-link">
+            + Write a post
+          </Link>
+        </div>
+
+        <PostList posts={mappedPosts} />
+      </div>
+    </main>
   );
 }
