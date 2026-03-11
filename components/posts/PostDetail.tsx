@@ -18,17 +18,6 @@ export default function PostDetail({ title, content, author, tags, authorBio }: 
 
   return (
     <article className="post-detail animate-fade-in-up">
-      {/* Tags */}
-      {tags.length > 0 && (
-        <div className="tags-row delay-1 animate-fade-in-up" style={{ marginBottom: 20 }}>
-          {tags.map((tag) => (
-            <span key={tag} className="tag">
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-
       {/* Title */}
       <header className="post-detail-header">
         <h1 className="post-detail-title delay-2 animate-fade-in-up">{title}</h1>
@@ -71,6 +60,17 @@ export default function PostDetail({ title, content, author, tags, authorBio }: 
           )}
         </div>
       </div>
+
+      {/* Tags — subtle, at the very bottom */}
+      {tags.length > 0 && (
+        <div className="tags-row tags-subtle delay-6 animate-fade-in-up" style={{ marginTop: 24 }}>
+          {tags.map((tag) => (
+            <span key={tag} className="tag tag-light">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
     </article>
   );
 }

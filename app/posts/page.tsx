@@ -1,5 +1,8 @@
 import PostList from "@/components/posts/PostList";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 interface Post {
   id: string;
@@ -23,6 +26,11 @@ async function getPosts() {
 }
 
 export default async function PostsPage() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    redirect("/");
+  }
+
   const posts = (await getPosts()) as Post[];
 
   const mappedPosts = posts.map((post: Post) => ({

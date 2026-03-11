@@ -350,6 +350,35 @@ a:hover { opacity: 0.8; }
   color: var(--text-faint);
 }
 
+.author-name-vintage {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: linear-gradient(
+    to bottom,
+    #e8d5a3 0%,
+    #c9a96e 40%,
+    #8a7248 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: background 0.3s ease;
+}
+
+.post-card:hover .author-name-vintage {
+  background: linear-gradient(
+    to bottom,
+    #f0e2b6 0%,
+    #d4b57a 35%,
+    #c9a96e 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* ─── Tags ─── */
 .tag {
   display: inline-flex;
@@ -373,6 +402,21 @@ a:hover { opacity: 0.8; }
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.tags-subtle {
+  opacity: 0.7;
+}
+
+.tag-light {
+  border-color: var(--border-light);
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.03);
+  font-weight: 500;
+}
+.tag-light:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
 }
 
 /* ─── Auth Pages ─── */
