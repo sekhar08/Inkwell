@@ -1,28 +1,28 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { signup } from "@/lib/actions/auth.actions";
 
 export default function SignupForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, email, password }),
+    startTransition(async () => {
+      try {
+        const response = await signup({ name, email, password });
+        if (response) {
+          alert("Signup successful!");
+        } else {
+          alert("Signup failed. Please try again.");
+        }
+      } catch (err) {
+        alert("Signup failed. Please try again.");
+      }
     });
-
-    if (response.ok) {
-      alert("Signup successful!");
-    } else {
-      alert("Signup failed. Please try again.");
-    }
   };
 
   return (
@@ -62,7 +62,9 @@ export default function SignupForm() {
             required
           />
         </div>
-        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200">Signup</button>
+        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200" disabled={isPending}>
+          {isPending ? "Signing up..." : "Signup"}
+        </button>
       </form>
     </div>
   );

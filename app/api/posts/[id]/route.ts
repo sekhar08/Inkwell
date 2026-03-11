@@ -1,9 +1,9 @@
-
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import type { NextRequest } from 'next/server';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const postId = params.id;
+export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id: postId } = await context.params;
 
   // Fetch the post with author name and tags from the database
   const post = await prisma.post.findUnique({

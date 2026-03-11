@@ -1,15 +1,23 @@
 'use client'
 
-import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { login } from "@/lib/actions/auth.actions";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signIn("credentials", { email, password });
+    startTransition(async () => {
+      try {
+        await login({ email, password });
+        window.location.reload();
+      } catch {
+        alert("Login failed. Please try again.");
+      }
+    });
   };
 
   return (
@@ -38,7 +46,9 @@ export default function LoginForm() {
             required
           />
         </div>
-        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200">Login</button>
+        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200" disabled={isPending}>
+          {isPending ? "Logging in..." : "Login"}
+        </button>
       </form>
     </div>
   );
