@@ -21,7 +21,7 @@ export default function PostDetail({ id, title, content, author, tags, authorBio
     <article className="post-detail animate-fade-in-up">
       {/* Title */}
       <header className="post-detail-header" style={{ position: "relative" }}>
-        <div style={{ position: "absolute", top: 0, right: 0 }}>
+        <div style={{ position: "absolute", top: 0, right: 0, zIndex: 50 }}>
           <BookmarkButton postId={id} />
         </div>
         <h1 className="post-detail-title delay-2 animate-fade-in-up" style={{ paddingRight: 48 }}>{title}</h1>

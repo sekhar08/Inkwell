@@ -15,18 +15,20 @@ export default function BookmarkButton({ postId }: BookmarkButtonProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
     async function fetchStatus() {
-      if (session?.user) {
+      if (session?.user?.id) {
         try {
           const status = await getPostBookmarkStatus(postId);
-          setIsBookmarked(status);
+          if (mounted) setIsBookmarked(status);
         } catch (error) {
           console.error("Error fetching bookmark status:", error);
         }
       }
-      setLoading(false);
+      if (mounted) setLoading(false);
     }
     fetchStatus();
+    return () => { mounted = false; };
   }, [postId, session]);
 
   const handleToggle = async (e: React.MouseEvent) => {
@@ -38,18 +40,21 @@ export default function BookmarkButton({ postId }: BookmarkButtonProps) {
       return;
     }
 
+    setLoading(true);
     try {
       const result = await toggleBookmark(postId);
       setIsBookmarked(result.bookmarked);
     } catch (error) {
       console.error("Error toggling bookmark:", error);
+      alert("Failed to update bookmark. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // No early return for !session
-
   return (
     <button
+      type="button"
       onClick={handleToggle}
       className={`bookmark-btn ${isBookmarked ? "active" : ""}`}
       aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
