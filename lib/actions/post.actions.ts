@@ -59,3 +59,98 @@ export async function createPost(input: { title: string; content: string; tags?:
         );
     }
 }
+
+export async function toggleBookmark(postId: string) {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+        throw new Error("Unauthorized: You must be logged in to bookmark a post.");
+    }
+
+    const userId = session.user.id;
+
+    try {
+        const existingBookmark = await prisma.bookmark.findFirst({
+            where: {
+                userId,
+                postId,
+            },
+        });
+
+        if (existingBookmark) {
+            await prisma.bookmark.delete({
+                where: {
+                    id: existingBookmark.id,
+                },
+            });
+            return { bookmarked: false };
+        } else {
+            await prisma.bookmark.create({
+                data: {
+                    userId,
+                    postId,
+                },
+            });
+            return { bookmarked: true };
+        }
+    } catch (error: any) {
+        console.error("toggleBookmark error:", error?.message);
+        throw new Error("Failed to toggle bookmark.");
+    }
+}
+
+export async function getBookmarkedPosts() {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+        throw new Error("Unauthorized: You must be logged in to view bookmarks.");
+    }
+
+    try {
+        const bookmarks = await prisma.bookmark.findMany({
+            where: {
+                userId: session.user.id,
+            },
+            include: {
+                post: {
+                    include: {
+                        author: {
+                            select: { name: true, image: true },
+                        },
+                        tags: true,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+
+        const posts = bookmarks.map((b) => b.post);
+        return JSON.parse(JSON.stringify(posts));
+    } catch (error: any) {
+        console.error("getBookmarkedPosts error:", error?.message);
+        throw new Error("Failed to fetch bookmarked posts.");
+    }
+}
+
+export async function getPostBookmarkStatus(postId: string) {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+        return false;
+    }
+
+    try {
+        const bookmark = await prisma.bookmark.findFirst({
+            where: {
+                userId: session.user.id,
+                postId,
+            },
+        });
+
+        return !!bookmark;
+    } catch (error) {
+        return false;
+    }
+}

@@ -48,6 +48,7 @@ export default async function PostPage({
         </div>
 
         <PostDetail
+          id={post.id}
           title={post.title}
           content={post.content}
           author={post.author?.name ?? "Anonymous"}

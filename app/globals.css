@@ -836,3 +836,48 @@ a:hover { opacity: 0.8; }
 .text-muted  { color: var(--text-muted); }
 .text-faint  { color: var(--text-faint); }
 .font-display { font-family: var(--font-display); }
+
+/* ─── Bookmark Button ─── */
+.bookmark-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-faint);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--bg-surface);
+}
+
+.bookmark-btn:hover {
+  border-color: var(--accent-dim);
+  color: var(--text-muted);
+  transform: scale(1.1);
+}
+
+.bookmark-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-glow);
+}
+
+.bookmark-btn.active .lucide {
+  fill: var(--accent);
+}
+
+.bookmark-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bookmark-btn .lucide {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.bookmark-btn:active .lucide {
+  transform: scale(0.8);
+}

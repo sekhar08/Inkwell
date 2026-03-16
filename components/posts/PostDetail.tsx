@@ -1,6 +1,7 @@
-import React from "react";
+import BookmarkButton from "./BookmarkButton";
 
 type PostDetailProps = {
+  id: string;
   title: string;
   content: string;
   author: string;
@@ -8,7 +9,7 @@ type PostDetailProps = {
   authorBio?: string;
 };
 
-export default function PostDetail({ title, content, author, tags, authorBio }: PostDetailProps) {
+export default function PostDetail({ id, title, content, author, tags, authorBio }: PostDetailProps) {
   const initials = author
     .split(" ")
     .map((n) => n[0])
@@ -19,8 +20,11 @@ export default function PostDetail({ title, content, author, tags, authorBio }: 
   return (
     <article className="post-detail animate-fade-in-up">
       {/* Title */}
-      <header className="post-detail-header">
-        <h1 className="post-detail-title delay-2 animate-fade-in-up">{title}</h1>
+      <header className="post-detail-header" style={{ position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, right: 0 }}>
+          <BookmarkButton postId={id} />
+        </div>
+        <h1 className="post-detail-title delay-2 animate-fade-in-up" style={{ paddingRight: 48 }}>{title}</h1>
 
         {/* Author line */}
         <div

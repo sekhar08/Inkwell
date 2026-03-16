@@ -28,6 +28,9 @@ export default function Navbar() {
               <Link href="/posts" className="btn btn-ghost btn-sm">
                 Read
               </Link>
+              <Link href="/bookmarks" className="btn btn-ghost btn-sm">
+                Bookmarks
+              </Link>
               <Link href="/posts/create" className="btn btn-primary btn-sm">
                 + Write
               </Link>
