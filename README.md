@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Inkwell
+
+Inkwell is a minimal long-form writing platform built with Next.js, Prisma, and NextAuth.
+It supports account creation, social + credentials sign-in, publishing posts with tags, and bookmarking posts for later reading.
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router), React 19, TypeScript
+- **Auth:** NextAuth (Credentials, GitHub, Google) + Prisma Adapter
+- **Database:** PostgreSQL via Prisma with Neon HTTP adapter
+- **Styling:** Global CSS + Tailwind dependencies
+
+## Core Features
+
+- Elegant landing page for signed-out and signed-in users
+- Email/password signup with hashed passwords (`bcrypt`)
+- OAuth sign-in with GitHub and Google
+- Create and publish posts
+- Tag support on posts
+- Read latest published posts
+- Bookmark/unbookmark posts
+- Personal bookmarks page
+
+## Project Structure
+
+- `app/` — routes, API handlers, layout, providers
+- `components/` — UI and feature components (auth, posts, navbar)
+- `lib/` — auth config, Prisma client, server actions, schemas
+- `prisma/` — schema, generated client output, migrations
+- `types/` — type augmentation (NextAuth session/JWT)
+
+## Prerequisites
+
+- Node.js 20+
+- npm 10+
+- A PostgreSQL database (Neon or compatible)
+
+## Environment Variables
+
+Create a `.env` file in the repository root:
+
+```env
+DATABASE_URL=postgresql://...
+NEXTAUTH_SECRET=your-secret
+
+GITHUB_ID=...
+GITHUB_SECRET=...
+
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+```
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+   ```bash
+   npm ci
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Generate Prisma client (also runs automatically on install via `postinstall`):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   ```bash
+   npx prisma generate
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Run Prisma migrations:
 
-## Learn More
+   ```bash
+   npx prisma migrate dev
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. Start the dev server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Open [http://localhost:3000](http://localhost:3000).
 
-## Deploy on Vercel
+## Available Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `npm run dev` — start local development server
+- `npm run build` — build production bundle
+- `npm run start` — start production server
+- `npm run lint` — run ESLint
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Validation Notes
+
+- `npm run build` succeeds in the current repository state.
+- `npm run lint` currently reports pre-existing lint issues unrelated to this README refresh.
